@@ -1,0 +1,90 @@
+/* Общие стили для страницы */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  
+  /* Стили для контейнера задач */
+  div {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Стили для заголовка */
+  h1 {
+    color: #333;
+  }
+  
+  /* Стили для кнопки "Logout" */
+  button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  /* Стили для блока создания задачи */
+  h2 {
+    margin-top: 20px;
+    color: #333;
+  }
+  
+  input {
+    margin: 5px 0;
+    padding: 8px;
+    width: 100%;
+  }
+  
+  /* Стили для таблицы задач */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  /* Стили для строки с задачей */
+  .completed-task {
+    background-color: #d4edda; /* Цвет для завершенной задачи */
+  }
+  
+  /* Стили для кнопок внутри ячейки таблицы */
+  button {
+    margin-right: 5px;
+    background-color: #28a745; /* Зеленый цвет */
+    color: #fff;
+    border: none;
+    padding: 5px 8px;
+    cursor: pointer;
+  }
+  
+  /* Стили для полей ввода внутри ячейки таблицы */
+  input {
+    padding: 5px 8px;
+    margin-right: 5px;
+  }
+  
+  /* Стили для кнопок "Update" и "Delete" */
+  button:nth-child(1) {
+    background-color: #17a2b8; /* Голубой цвет */
+  }
+  
+  button:nth-child(2) {
+    background-color: #dc3545; /* Красный цвет */
+  }
