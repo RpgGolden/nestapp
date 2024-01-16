@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../src/login.css';
 const TaskForm = ({token}) => {
-    const history = useNavigate();
+    const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({ name: '', description: '' });
     const [isUpdating, setIsUpdating] = useState(false);
@@ -125,7 +125,7 @@ const deleteTask = async (taskId) => {
   return (
     <div>
       <h1>Task List</h1>
-      <button onClick={() => history.push('/login')}>Logout</button>
+      <button onClick={() => navigate('/login')}>Logout</button>
       <div>
         <h2>Create Task</h2>
         <input

@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import { withRouter, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const AuthForm = () => {
-    const history = useNavigate();
+    const navigate = useNavigate();
     const [signupData, setSignupData] = useState({ username: '', email: '', password: '' });
     const [loginData, setLoginData] = useState({ email: '', password: '' });
   
