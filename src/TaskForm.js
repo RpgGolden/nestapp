@@ -1,59 +1,63 @@
 // TaskForm.js
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../src/login.css';
-const TaskForm = ({token}) => {
-    const navigate = useNavigate();
-    const [tasks, setTasks] = useState([]);
-    const [newTask, setNewTask] = useState({ name: '', description: '' });
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [updatedTask, setUpdatedTask] = useState({ name: '', description: '' });
-    const [selectedTask, setSelectedTask] = useState(null);
-
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "../src/login.css";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutAction } from "./store/authReducer";
+const TaskForm = ({}) => {
+  const navigate = useNavigate();
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState({ name: "", description: "" });
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updatedTask, setUpdatedTask] = useState({ name: "", description: "" });
+  const [selectedTask, setSelectedTask] = useState(null);
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.accessToken);
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if(token) {
-        fetchTasks(token);
+    if (token) {
+      fetchTasks(token);
     }
-  }, []);
+  }, [token]);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:3000/api/auth/logout");
+      dispatch(logoutAction());
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   const fetchTasks = async (token) => {
     try {
-      const response = await axios.get('http://localhost:3000/api/task', {
+      const response = await axios.get("http://localhost:3000/api/task", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setTasks(response.data);
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      console.error("Error fetching tasks:", error);
     }
   };
 
   const createTask = async () => {
     try {
-        const token = localStorage.getItem('accessToken');
+      await axios.post("http://localhost:3000/api/task", newTask, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        await axios.post(
-            'http://localhost:3000/api/task',
-            newTask,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        fetchTasks();
+      fetchTasks();
     } catch (error) {
-        console.error('Error creating task:', error);
+      console.error("Error creating task:", error);
     }
-};
-const deleteTask = async (taskId) => {
+  };
+  const deleteTask = async (taskId) => {
     try {
-      const token = localStorage.getItem('accessToken');
       await axios.delete(`http://localhost:3000/api/task/${taskId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,13 +65,12 @@ const deleteTask = async (taskId) => {
       });
       fetchTasks(token);
     } catch (error) {
-      console.error('Error deleting task:', error);
+      console.error("Error deleting task:", error);
     }
-};
-  
+  };
+
   const toggleTask = async (taskId) => {
     try {
-        const token = localStorage.getItem('accessToken');
       await axios.patch(`http://localhost:3000/api/task/${taskId}`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -75,13 +78,12 @@ const deleteTask = async (taskId) => {
       });
       fetchTasks(token);
     } catch (error) {
-      console.error('Error toggling task:', error);
+      console.error("Error toggling task:", error);
     }
   };
-  
+
   const updateTask = async (taskId) => {
     try {
-      const token = localStorage.getItem('accessToken');
       await axios.patch(
         `http://localhost:3000/api/task/${taskId}/name`,
         updatedTask,
@@ -94,15 +96,15 @@ const deleteTask = async (taskId) => {
       fetchTasks(token);
       setSelectedTask(null);
       setIsUpdating(false);
-      setUpdatedTask({ name: '', description: '' });
+      setUpdatedTask({ name: "", description: "" });
     } catch (error) {
-      console.error('Error updating task:', error);
+      console.error("Error updating task:", error);
     }
   };
-  
+
   const handleCreateTask = () => {
     createTask();
-    setNewTask({ name: '', description: '' });
+    setNewTask({ name: "", description: "" });
   };
 
   const handleDeleteTask = (taskId) => {
@@ -121,11 +123,10 @@ const deleteTask = async (taskId) => {
     updateTask(selectedTask);
   };
 
-
   return (
     <div>
       <h1>Task List</h1>
-      <button onClick={() => navigate('/login')}>Logout</button>
+      <button onClick={handleLogout}>Logout</button>
       <div>
         <h2>Create Task</h2>
         <input
@@ -138,7 +139,9 @@ const deleteTask = async (taskId) => {
           type="text"
           placeholder="Task Description"
           value={newTask.description}
-          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+          onChange={(e) =>
+            setNewTask({ ...newTask, description: e.target.value })
+          }
         />
         <button onClick={handleCreateTask}>Create Task</button>
       </div>
@@ -154,7 +157,7 @@ const deleteTask = async (taskId) => {
           </thead>
           <tbody>
             {tasks.map((task) => (
-              <tr key={task.id} className={task.isDone ? 'completed-task' : ''}>
+              <tr key={task.id} className={task.isDone ? "completed-task" : ""}>
                 <td>{task.name}</td>
                 <td>{task.description}</td>
                 <td>
@@ -164,23 +167,39 @@ const deleteTask = async (taskId) => {
                         type="text"
                         placeholder="New Task Name"
                         value={updatedTask.name}
-                        onChange={(e) => setUpdatedTask({ ...updatedTask, name: e.target.value })}
+                        onChange={(e) =>
+                          setUpdatedTask({
+                            ...updatedTask,
+                            name: e.target.value,
+                          })
+                        }
                       />
                       <input
                         type="text"
                         placeholder="New Task Description"
                         value={updatedTask.description}
-                        onChange={(e) => setUpdatedTask({ ...updatedTask, description: e.target.value })}
+                        onChange={(e) =>
+                          setUpdatedTask({
+                            ...updatedTask,
+                            description: e.target.value,
+                          })
+                        }
                       />
-                      <button onClick={handleUpdateTaskFormSubmit}>Update Task</button>
+                      <button onClick={handleUpdateTaskFormSubmit}>
+                        Update Task
+                      </button>
                     </>
                   ) : (
                     <>
-                      <button onClick={() => handleUpdateTask(task.id)}>Update</button>
-                      <button onClick={() => handleToggleTask(task.id)}>
-                        {task.isDone ? 'Undo' : 'Complete'}
+                      <button onClick={() => handleUpdateTask(task.id)}>
+                        Update
                       </button>
-                      <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+                      <button onClick={() => handleToggleTask(task.id)}>
+                        {task.isDone ? "Undo" : "Complete"}
+                      </button>
+                      <button onClick={() => handleDeleteTask(task.id)}>
+                        Delete
+                      </button>
                     </>
                   )}
                 </td>
