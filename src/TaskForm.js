@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutAction } from "./store/authReducer";
 import TaskList from "./TaskListForm";
 import TaskCreationForm from "./TaskCreateForm";
-import { fetchTasksRequest } from "./saga/taskActions"; // Import the action
 
 //mobx
 import { observer } from "mobx-react-lite";
 import taskStore from "./mobx/taskStore";
 
+// saga
+import { createTaskRequest } from "./saga/taskActions";
 
 const TaskForm = observer(() => {
   const navigate = useNavigate();
@@ -21,11 +22,15 @@ const TaskForm = observer(() => {
 
   useEffect(() => {
     if (token) {
-      fetchTasksRequest(token);
+      taskStore.fetchTasks(token);
       // taskStore.fetchTasks(token);
     }
   }, [token, dispatch]);
 
+  const handleCreateTask = () => {
+    dispatch(createTaskRequest(taskStore.newTask, token));
+    
+  }
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:3000/api/auth/logout");
@@ -44,7 +49,7 @@ const TaskForm = observer(() => {
       <TaskCreationForm
         newTask={taskStore.newTask}
         setNewTask={taskStore.setNewTask.bind(taskStore)}
-        handleCreateTask={() => taskStore.createTask(token)}
+        handleCreateTask={handleCreateTask} // Use the Redux-Saga handler
       />
       <TaskList
         tasks={taskStore.tasks}

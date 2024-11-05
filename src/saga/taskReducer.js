@@ -1,6 +1,8 @@
-
 // taskReducer.js
-import { FETCH_TASKS_SUCCESS, FETCH_TASKS_FAILURE } from './taskActionTypes';
+import {
+  FETCH_TASKS_SUCCESS,
+  FETCH_TASKS_FAILURE,
+} from './taskActionTypes';
 
 const initialState = {
   tasks: [],

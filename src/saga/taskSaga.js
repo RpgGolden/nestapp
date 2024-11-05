@@ -1,22 +1,23 @@
-// taskSagas.js
-import { call, put, takeLatest } from 'redux-saga/effects';
+// taskSaga.js
+import { call, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
-import { fetchTasksSuccess, fetchTasksFailure } from './taskActions'; // Define these actions
-import { FETCH_TASKS_REQUEST } from './taskActionTypes'; // Define this action type
-
-function* fetchTasksSaga(action) {
+import { createTaskRequest } from './taskActions';
+import taskStore from '../mobx/taskStore';
+function* createTaskSaga(action) {
   try {
-    const response = yield call(axios.get, "http://localhost:3000/api/task", {
+    const token = localStorage.getItem("token");
+    console.log(action)
+    yield call(axios.post, "http://localhost:3000/api/task", action.task, {
       headers: {
-        Authorization: `Bearer ${action.token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
-    yield put(fetchTasksSuccess(response.data));
+    taskStore.fetchTasks(token);
   } catch (error) {
-    yield put(fetchTasksFailure(error.message));
+    console.error("Error creating task:", error);
   }
 }
 
 export default function* taskSagas() {
-  yield takeLatest(FETCH_TASKS_REQUEST, fetchTasksSaga);
+  yield takeLatest(createTaskRequest, createTaskSaga);
 }
