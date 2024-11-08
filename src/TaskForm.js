@@ -21,8 +21,8 @@ const TaskForm = observer(() => {
 
   useEffect(() => {
     if (token) {
-      fetchTasksRequest(token);
-      // taskStore.fetchTasks(token);
+      // fetchTasksRequest(token);
+      taskStore.fetchTasks(token);
     }
   }, [token, dispatch]);
 
